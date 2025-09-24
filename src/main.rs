@@ -1,5 +1,5 @@
 use uniquant::core::{config, logger};
-use uniquant::web;
+use uniquant::api;
 
 use std::net::SocketAddr;
 use tokio::net::TcpListener;
@@ -11,7 +11,7 @@ async fn main() -> anyhow::Result<()> {
     logger::init();
 
     // 构建 app
-    let app = web::create_app();
+    let app = api::create_app();
 
     // 监听地址
     let addr: SocketAddr = config.server.addr.parse()?;

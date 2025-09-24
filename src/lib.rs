@@ -1,3 +1,3 @@
 pub mod core;
 pub mod entities;
-pub mod web;
+pub mod api;
