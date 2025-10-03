@@ -1,25 +1,36 @@
-use uniquant::core::{config, logger};
-use uniquant::api;
+use std::sync::Arc;
 
-use std::net::SocketAddr;
-use tokio::net::TcpListener;
+pub mod api;
+pub mod core;
+pub mod db;
+pub mod dto;
+pub mod entity;
+pub mod service;
+pub mod error;
+pub mod macros;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    core::logging::logger::init();
     // 初始化配置 & 日志
-    let config = config::AppConfig::load();
-    logger::init();
+    let config = core::config::AppConfig::bootstrap()?;
+    let config = Arc::new(config.clone());
+    core::logging::init();
+
+    // 初始化数据库连接池
+    let db = db::connection::DbPool::new(&config.database.db_url).await?;
+    db.run_migrations().await?;
+    
+    let repo = Arc::new(db);
+
+    // 初始化服务工厂
+    let service_factory = service::factory::ServiceFactory::new(repo.clone());
+    let service_factory = Arc::new(service_factory);
 
     // 构建 app
-    let app = api::create_app();
+    let app = api::WebServer::new(config, service_factory)?;
 
-    // 监听地址
-    let addr: SocketAddr = config.server.addr.parse()?;
-    let listener = TcpListener::bind(addr).await?;
-    tracing::info!("🚀 UniQuant running on {}", addr);
-
-    // 启动服务
-    axum::serve(listener, app).await?;
+    app.start().await?;
 
     Ok(())
 }

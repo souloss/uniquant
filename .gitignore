@@ -1,5 +1,5 @@
 # Rust build artifacts
-/target
+target
 
 # IDE configuration files
 .idea/
@@ -13,3 +13,5 @@ Cargo.lock
 
 # Temporary files
 *.tmp
+
+*.db
