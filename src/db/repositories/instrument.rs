@@ -3,7 +3,7 @@ use std::sync::Arc;
 use sea_orm::*;
 use crate::db::connection::DbPool;
 use crate::db::repositories::Repository;
-use crate::entity::instrument;
+use entities::instrument;
 
 pub struct InstrumentRepository {
     db: Arc<DbPool>,

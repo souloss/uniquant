@@ -22,7 +22,7 @@ DATABASE_URL = sqlite:$(CURDIR)/uniquant.db?mode=rwc
 # DATABASE_URL = postgres://user:password@localhost/database
 
 # Output directory for generated entities
-ENTITY_OUTPUT_DIR = src/entity
+ENTITY_OUTPUT_DIR = crates/entities/src
 # Output directory for generated dto
 DTO_OUTPUT_DIR = src/dto/generated
 # Optional: Generate serde derives for entities
@@ -30,12 +30,12 @@ DTO_OUTPUT_DIR = src/dto/generated
 WITH_SERDE = both
 
 # Migration directory (usually 'migration')
-MIGRATION_DIR = src/migration
+MIGRATION_DIR = crates/migration
 
 # --- Commands ---
 # The command to run sea-orm-cli for migrations.
 # It runs the migration binary from the migration directory.
-MIGRATION_CMD = cd $(MIGRATION_DIR) && cargo run --manifest-path ./Cargo.toml --
+MIGRATION_CMD = export DATABASE_URL=$(DATABASE_URL) && cd $(MIGRATION_DIR) && cargo run --manifest-path ./Cargo.toml --
 
 # The command to run sea-orm-cli for entity generation.
 # Assumes sea-orm-cli is installed globally or in your PATH.
@@ -112,6 +112,7 @@ generate-entity: migrate-up
 	$(GENERATE_CMD) generate entity \
 		-u "$(DATABASE_URL)" \
 		-o "$(ENTITY_OUTPUT_DIR)" \
+		--lib
 		$$SERDE_FLAG
 	@echo "Entity generation complete."
 

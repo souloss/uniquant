@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
-use crate::entity::instrument;
+use entities::instrument;
 
 #[derive(Debug, Deserialize, Validate, utoipa::ToSchema)]
 pub struct CreateInstrumentRequest {

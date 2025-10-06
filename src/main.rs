@@ -4,10 +4,8 @@ pub mod api;
 pub mod core;
 pub mod db;
 pub mod dto;
-pub mod entity;
 pub mod service;
 pub mod error;
-pub mod macros;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {

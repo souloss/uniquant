@@ -22,15 +22,16 @@
 
 ## 📂 模块结构（规划）
 ```
+
 uniquant/
+├── crates
+│   ├── entities    # 数据库实体定义
+│   └── migration   # 数据库迁移
 ├── api/            # Rust Axum 控制器和处理器以及中间件
 ├── core/           # 核心库：配置/日志初始化等
 ├── db/             # 数据库抽象层（连接管理/repo层）
 ├── dto/            # 业务模型管理
-├── entity/         # 数据库实体定义
 ├── error/          # 应用错误/错误码/错误消息以及翻译定义
-├── macros/         # 宏定义
-├── migration/      # 数据库迁移
 ├── service/        # 业务逻辑实现
 │ ├── queue/        # 队列抽象和实现（如Redis、内存队列）
 │ ├── consumer/     # 消费者实现

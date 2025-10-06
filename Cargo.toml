@@ -4,13 +4,11 @@ version = "0.1.0"
 edition = "2024"
 
 [workspace]
-members = [
-    "src/migration",
-    "."
-]
+members = [".", "crates/entities", "crates/migration"]
 
 [dependencies]
-migration = { path = "src/migration" }
+migration = { path = "crates/migration" }
+entities = { path = "crates/entities" }
 
 # --- Web 框架 ---
 axum = { version = "0.8", features = ["macros", "json"] }
