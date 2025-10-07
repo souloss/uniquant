@@ -1,5 +1,5 @@
 use serde::{Serialize};
-use crate::error::app_code::AppCode;
+use crate::error::code::AppCode;
 
 /// 统一的 API 响应结构
 #[derive(Debug, Serialize, utoipa::ToSchema)]

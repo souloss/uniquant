@@ -1,7 +1,7 @@
 // src/error/message.rs
 use once_cell::sync::Lazy;
 use tera::{Tera, Context};
-use crate::error::{AppError, app_code::AppCode};
+use crate::error::{AppError, code::AppCode};
 
 /// 支持的语言
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

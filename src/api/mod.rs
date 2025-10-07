@@ -1,9 +1,14 @@
 pub mod instrument;
-
-// src/api/mod.rs
+pub mod middleware;
+pub mod error;
 
 use std::sync::Arc;
 use std::net::SocketAddr;
+use tower_http::{
+    cors::{Any, CorsLayer},
+    trace::TraceLayer,
+};
+
 use axum::{
     Router,
     routing::get,
@@ -37,7 +42,10 @@ impl WebServer {
             // 健康检查端点（无状态）
             .route("/health", get(health_check))
             // 合并所有业务模块的路由
-            .merge(instrument::routes::routes(instrument_service));
+            .merge(instrument::routes::routes(instrument_service))
+            .layer(axum::middleware::from_fn(middleware::context::request_context_middleware))
+            .layer(TraceLayer::new_for_http())
+            .layer(CorsLayer::new().allow_origin(Any).allow_methods(Any).allow_headers(Any));
 
         // 3. 解析服务器地址
         let addr: SocketAddr = config.server.addr.parse()?;
