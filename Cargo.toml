@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [workspace]
-members = [".", "crates/entities", "crates/migration"]
+members = [".", "crates/entities", "crates/migration", "tools/ftl-codegen"]
 
 [dependencies]
 migration = { path = "crates/migration" }
@@ -50,9 +50,9 @@ tracing-error = "0.2"
 tracing-attributes = "0.1.30"
 tracing-log = "0.2.0"
 tracing-appender = "0.2.3"
-tracing-opentelemetry = "0.31.0"
 
 
+# tracing-opentelemetry = "0.31.0"
 # OpenTelemetry, 需要参考仓库/文档: https://github.com/open-telemetry/opentelemetry-rust/pull/2221
 # opentelemetry = { version = "0.31", features = ["trace"] }
 # opentelemetry_sdk = { version = "0.31", features = ["rt-tokio", "logs"] }

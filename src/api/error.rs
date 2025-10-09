@@ -1,3 +1,5 @@
+#![allow(unreachable_patterns)]
+
 use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
@@ -11,12 +13,15 @@ impl From<AppCode> for StatusCode {
     fn from(code: AppCode) -> Self {
         match code {
             AppCode::Success => StatusCode::OK,
-            AppCode::BadRequest => StatusCode::BAD_REQUEST,
+            AppCode::Validation | AppCode::BadRequest => StatusCode::BAD_REQUEST,
             AppCode::Unauthorized => StatusCode::UNAUTHORIZED,
             AppCode::Forbidden => StatusCode::FORBIDDEN,
             AppCode::NotFound => StatusCode::NOT_FOUND,
             AppCode::Conflict => StatusCode::CONFLICT,
-            AppCode::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
+            // 显式列出已知的 5xx
+            AppCode::Internal | AppCode::Database => StatusCode::INTERNAL_SERVER_ERROR,
+            // 任何尚未显式处理的新变体都进这里
+            _ => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 }

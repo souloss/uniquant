@@ -63,8 +63,8 @@ impl MessageRenderer {
             (AppCode::Conflict, Language::Chinese) => "conflict_zh",
             (AppCode::BadRequest, Language::English) => "bad_request_en",
             (AppCode::BadRequest, Language::Chinese) => "bad_request_zh",
-            (AppCode::InternalError, Language::English) => "internal_error_en",
-            (AppCode::InternalError, Language::Chinese) => "internal_error_zh",
+            (AppCode::Internal, Language::English) => "internal_error_en",
+            (AppCode::Internal, Language::Chinese) => "internal_error_zh",
             // 默认回退到英文内部错误
             _ => "internal_error_en",
         };

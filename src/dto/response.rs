@@ -21,7 +21,7 @@ impl<T> APIResponse<T> {
         Self {
             success: true,
             code: AppCode::Success.code(),
-            message: AppCode::Success.message().to_string(),
+            message: AppCode::Success.description().to_string(),
             data: Some(data),
         }
     }

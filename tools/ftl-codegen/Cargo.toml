@@ -1,0 +1,21 @@
+[package]
+name = "ftl-codegen"
+version = "0.1.0"
+edition = "2024"
+description = "A CLI tool for Fluent i18n key consistency checking and AppCode generation"
+license = "MIT"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.9.7"
+anyhow = "1.0"
+walkdir = "2"
+regex = "1"
+colored = "3.0.0"
+lazy_static = "1"
+fluent-syntax = "0.12.0"
+codegen = "0.2"
+prettyplease = "0.2"
+syn = { version = "2", features = ["full"] }
+serde_yaml = "0.9.34"

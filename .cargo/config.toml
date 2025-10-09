@@ -1,0 +1,2 @@
+[alias]
+ftl-codegen = "run --package ftl-codegen --bin ftl-codegen --"

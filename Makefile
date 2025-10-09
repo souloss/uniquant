@@ -63,6 +63,7 @@ help:
 	@echo ""
 	@echo "  generate-entity    Generate entities from the database schema."
 	@echo "  generate-dto       Generate dto from the database schema."
+	@echo "  generate-appcode   Generate APPCode from the configs/codes.yaml."
 	@echo "                     (This will automatically run 'migrate-up' first)."
 	@echo ""
 	@echo "  clean              Remove the database file and generated entities."
@@ -129,6 +130,10 @@ generate-dto: migrate-up
 		-o "$(DTO_OUTPUT_DIR)" \
 		$$SERDE_FLAG
 	@echo "DTO generation complete."
+
+generate-appcode:
+	@echo "Generating APPCode from codes.yaml..."
+	cargo ftl-codegen gen-code
 # --- Utility Target ---
 
 clean:

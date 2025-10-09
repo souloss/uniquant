@@ -1,0 +1,57 @@
+success:
+  success:
+    code: 0
+    description: "Success"
+    en: "Success"
+    zh-CN: "操作成功"
+
+error:
+  # client error
+  bad_request:
+    code: 4000
+    description: "Bad request"
+    en: "Bad request: { $message }"
+    zh-CN: "请求错误: { $message }"
+
+  unauthorized:
+    code: 4001
+    description: "Unauthorized"
+    en: "You are not authorized to perform this action."
+    zh-CN: "未授权，您没有执行该操作的权限。"
+
+  forbidden:
+    code: 4003
+    description: "Forbidden"
+    en: "Access to this resource is forbidden."
+    zh-CN: "访问该资源被禁止。"
+
+  not_found:
+    code: 4004
+    description: "Not found"
+    en: "The { $resource } with identifier \"{ $identifier }\" was not found."
+    zh-CN: "未找到资源 { $resource }（标识符：{ $identifier }）。"
+
+  conflict:
+    code: 4009
+    description: "Conflict"
+    en: "The { $resource } with identifier \"{ $identifier }\" already exists."
+    zh-CN: "资源 { $resource }（标识符：{ $identifier }）已存在。"
+
+  validation:
+    code: 4010
+    description: "Validation Error"
+    en: "Validation error: { $message }"
+    zh-CN: "校验错误：{ $message }"
+
+  # server error
+  internal:
+    code: 5000
+    description: "Internal server error"
+    en: "An internal server error occurred. Please try again later."
+    zh-CN: "服务器内部错误，请稍后再试。"
+
+  database:
+    code: 5001
+    description: "Database error"
+    en: "A database error occurred: { $message }"
+    zh-CN: "数据库错误: { $message }"

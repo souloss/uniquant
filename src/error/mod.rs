@@ -37,14 +37,14 @@ impl AppError {
     /// 将业务错误映射到应用返回码
     pub fn app_code(&self) -> AppCode {
         match self {
-            Self::ValidationError(_) => AppCode::BadRequest,
+            Self::ValidationError(_) => AppCode::Validation,
             Self::NotFound { .. } => AppCode::NotFound, // 使用 `..` 忽略字段
             Self::Unauthorized(_) => AppCode::Unauthorized,
             Self::Forbidden(_) => AppCode::Forbidden,
             Self::Conflict { .. } => AppCode::Conflict, // 使用 `..` 忽略字段
             Self::BadRequest(_) => AppCode::BadRequest,
-            Self::InternalError(_) => AppCode::InternalError,
-            Self::DatabaseError(_) => AppCode::InternalError,
+            Self::InternalError(_) => AppCode::Internal,
+            Self::DatabaseError(_) => AppCode::Internal,
         }
     }
 }
