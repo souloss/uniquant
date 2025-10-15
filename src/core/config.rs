@@ -40,6 +40,8 @@ pub struct LoggingConfig {
 pub struct AppConfig {
     pub app_name: String,
 
+    pub configs_dir: String,
+
     #[validate(nested)]
     pub database: DatabaseConfig,
 
@@ -58,6 +60,7 @@ impl AppConfig {
     fn builder_with_defaults() -> config::ConfigBuilder<config::builder::DefaultState> {
         Config::builder()
             .set_default("app_name","uniquant" ).unwrap()
+            .set_default("configs_dir","./configs/" ).unwrap()
             .set_default("database.db_url", "sqlite://uniquant.db").unwrap()
             .set_default("server.addr", "127.0.0.1:8333").unwrap()
             .set_default("logging.level", "debug").unwrap()

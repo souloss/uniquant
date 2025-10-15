@@ -1,50 +1,17 @@
-use crate::error::code::AppCode;
-
-// 确保导出了子模块
 pub mod code;
-pub mod message;
 
-#[derive(thiserror::Error, Debug)]
-pub enum AppError {
-    #[error("Validation error: {0}")]
-    ValidationError(String),
-
-    // 结构体变体，用于携带结构化数据
-    #[error("Not found")]
-    NotFound { resource: String, identifier: String },
-
-    #[error("Unauthorized")]
-    Unauthorized(String),
-
-    #[error("Forbidden")]
-    Forbidden(String),
-
-    // 结构体变体，用于携带结构化数据
-    #[error("Conflict")]
-    Conflict { resource: String, identifier: String },
-
-    #[error("Bad request")]
-    BadRequest(String),
-
-    #[error("Internal error")]
-    InternalError(String),
-
-    #[error("Database error")]
-    DatabaseError(#[from] sea_orm::DbErr),
-}
-
-impl AppError {
-    /// 将业务错误映射到应用返回码
-    pub fn app_code(&self) -> AppCode {
-        match self {
-            Self::ValidationError(_) => AppCode::Validation,
-            Self::NotFound { .. } => AppCode::NotFound, // 使用 `..` 忽略字段
-            Self::Unauthorized(_) => AppCode::Unauthorized,
-            Self::Forbidden(_) => AppCode::Forbidden,
-            Self::Conflict { .. } => AppCode::Conflict, // 使用 `..` 忽略字段
-            Self::BadRequest(_) => AppCode::BadRequest,
-            Self::InternalError(_) => AppCode::Internal,
-            Self::DatabaseError(_) => AppCode::Internal,
+impl From<sea_orm::DbErr> for code::AppError {
+    fn from(err: sea_orm::DbErr) -> Self {
+        match err {
+            sea_orm::DbErr::RecordNotFound(_) => code::AppError::Database {
+                message: "Record not found".to_string()
+            },
+            sea_orm::DbErr::Exec(_) | sea_orm::DbErr::Query(_) => code::AppError::Database {
+                message: "SQL execution error".to_string()
+            },
+            _ => code::AppError::Database {
+                message: "Unknown database error".to_string()
+            },
         }
     }
 }

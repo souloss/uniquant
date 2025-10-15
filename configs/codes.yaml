@@ -2,56 +2,110 @@ success:
   success:
     code: 0
     description: "Success"
-    en: "Success"
-    zh-CN: "操作成功"
+    translations:
+      en: "Success"
+      zh-CN: "操作成功"
+    http_status: 200
 
 error:
-  # client error
+  # --- 客户端错误 ---
   bad_request:
     code: 4000
     description: "Bad request"
-    en: "Bad request: { $message }"
-    zh-CN: "请求错误: { $message }"
+    args:
+      message:
+        type: string
+        optional: false
+    translations:
+      en: "Bad request: { $message }"
+      zh-CN: "请求错误: { $message }"
+    http_status: 400
 
   unauthorized:
     code: 4001
     description: "Unauthorized"
-    en: "You are not authorized to perform this action."
-    zh-CN: "未授权，您没有执行该操作的权限。"
+    translations:
+      en: "You are not authorized to perform this action."
+      zh-CN: "未授权，您没有执行该操作的权限。"
+    http_status: 401
 
   forbidden:
     code: 4003
     description: "Forbidden"
-    en: "Access to this resource is forbidden."
-    zh-CN: "访问该资源被禁止。"
+    translations:
+      en: "Access to this resource is forbidden."
+      zh-CN: "访问该资源被禁止。"
+    http_status: 403
 
   not_found:
     code: 4004
     description: "Not found"
-    en: "The { $resource } with identifier \"{ $identifier }\" was not found."
-    zh-CN: "未找到资源 { $resource }（标识符：{ $identifier }）。"
+    args:
+      resource:
+        type: string
+        optional: false
+      identifier:
+        type: string
+        optional: true
+    translations:
+      en: |
+        { $identifier ->
+            [none] The { $resource } was not found.
+           *[other] The { $resource } with identifier "{ $identifier }" was not found.
+        }
+      zh-CN: |
+        { $identifier ->
+            [none] 未找到资源 { $resource }。
+           *[other] 未找到资源 { $resource }（标识符：{ $identifier }）。
+        }
+    http_status: 404
 
   conflict:
     code: 4009
     description: "Conflict"
-    en: "The { $resource } with identifier \"{ $identifier }\" already exists."
-    zh-CN: "资源 { $resource }（标识符：{ $identifier }）已存在。"
+    args:
+      resource:
+        type: string
+        optional: false
+      identifier:
+        type: string
+        optional: false
+    translations:
+      en: "The { $resource } with identifier \"{ $identifier }\" already exists."
+      zh-CN: "资源 { $resource }（标识符：{ $identifier }）已存在。"
+    http_status: 409
 
   validation:
     code: 4010
     description: "Validation Error"
-    en: "Validation error: { $message }"
-    zh-CN: "校验错误：{ $message }"
+    args:
+      errors:
+        type: map
+        key: string
+        value: string
+        optional: true
+    translations:
+      en: "Validation failed."
+      zh-CN: "校验失败。"
+    http_status: 422
 
-  # server error
+  # --- 服务端错误 ---
   internal:
     code: 5000
     description: "Internal server error"
-    en: "An internal server error occurred. Please try again later."
-    zh-CN: "服务器内部错误，请稍后再试。"
+    translations:
+      en: "An internal server error occurred. Please try again later."
+      zh-CN: "服务器内部错误，请稍后再试。"
+    http_status: 500
 
   database:
     code: 5001
     description: "Database error"
-    en: "A database error occurred: { $message }"
-    zh-CN: "数据库错误: { $message }"
+    args:
+      message:
+        type: string
+        optional: false
+    translations:
+      en: "A database error occurred: { $message }"
+      zh-CN: "数据库错误: { $message }"
+    http_status: 500

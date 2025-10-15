@@ -1,4 +1,6 @@
-use std::sync::Arc;
+use std::{path::Path, sync::Arc};
+
+use crate::i18n::{fluent::FluentBackend, GlobalI18n};
 
 pub mod api;
 pub mod core;
@@ -6,6 +8,7 @@ pub mod db;
 pub mod dto;
 pub mod service;
 pub mod error;
+pub mod i18n;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -15,6 +18,10 @@ async fn main() -> anyhow::Result<()> {
     let config = Arc::new(config.clone());
     core::logging::init();
 
+    let locales_path = Path::new(config.configs_dir.as_str()).join("locales");
+    let i18n_backend = FluentBackend::new(locales_path.as_os_str().to_str().unwrap(), "en").unwrap();
+    GlobalI18n::get().init_with_backend(i18n_backend)?;
+    
     // 初始化数据库连接池
     let db = db::connection::DbPool::new(&config.database.db_url).await?;
     db.run_migrations().await?;

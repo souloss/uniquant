@@ -1,5 +1,5 @@
 use serde::{Serialize};
-use crate::error::code::AppCode;
+use crate::error::code::AppError;
 
 /// 统一的 API 响应结构
 #[derive(Debug, Serialize, utoipa::ToSchema)]
@@ -20,8 +20,8 @@ impl<T> APIResponse<T> {
     pub fn success(data: T) -> Self {
         Self {
             success: true,
-            code: AppCode::Success.code(),
-            message: AppCode::Success.description().to_string(),
+            code: AppError::Success.code(),
+            message: AppError::Success.description().to_string(),
             data: Some(data),
         }
     }
@@ -30,14 +30,14 @@ impl<T> APIResponse<T> {
     pub fn success_with_message(data: T, message: impl Into<String>) -> Self {
         Self {
             success: true,
-            code: AppCode::Success.code(),
+            code: AppError::Success.code(),
             message: message.into(),
             data: Some(data),
         }
     }
 
     /// 创建一个失败的响应
-    pub fn error(code: AppCode, message: impl Into<String>) -> APIResponse<()> {
+    pub fn error(code: AppError, message: impl Into<String>) -> APIResponse<()> {
         APIResponse {
             success: false,
             code: code.code(),

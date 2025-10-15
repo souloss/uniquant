@@ -2,7 +2,7 @@ use crate::dto::response::APIResponse;
 use crate::dto::instrument::{
     CreateInstrumentRequest, InstrumentResponse, UpdateInstrumentRequest,
 };
-use crate::error::AppError;
+use crate::error::code::AppError;
 use crate::service::instrument::{InstrumentService};
 use axum::{
     Json,
@@ -38,7 +38,7 @@ impl InstrumentHandler {
         let model = service.get_by_id(id).await?;
         let model = model.ok_or(AppError::NotFound {
             resource: "Instrument".to_string(),
-            identifier: id.to_string(),
+            identifier: Some(id.to_string()),
         })?;
         let response: InstrumentResponse = model.into();
         Ok(Json(APIResponse::success(response)))
@@ -68,7 +68,7 @@ impl InstrumentHandler {
         if !deleted {
             return Err(AppError::NotFound {
                 resource: "Instrument".to_string(),
-                identifier: id.to_string(),
+                identifier: Some(id.to_string()),
             });
         }
         Ok(axum::http::StatusCode::NO_CONTENT)

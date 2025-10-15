@@ -1,44 +1,58 @@
 #![allow(unreachable_patterns)]
 
 use axum::{
-    http::StatusCode,
+    http::{StatusCode},
     response::{IntoResponse, Response},
     Json,
 };
-use crate::dto::response::APIResponse;
-use crate::error::{AppError, code::AppCode};
+use crate::{dto::response::APIResponse, i18n::{supported_locales, t_locale}};
+use crate::error::code::AppError;
+use accept_language::parse_with_quality;
+use unic_langid::{langid, LanguageIdentifier};
 use crate::api::middleware::context::get_request_context;
 
-impl From<AppCode> for StatusCode {
-    fn from(code: AppCode) -> Self {
-        match code {
-            AppCode::Success => StatusCode::OK,
-            AppCode::Validation | AppCode::BadRequest => StatusCode::BAD_REQUEST,
-            AppCode::Unauthorized => StatusCode::UNAUTHORIZED,
-            AppCode::Forbidden => StatusCode::FORBIDDEN,
-            AppCode::NotFound => StatusCode::NOT_FOUND,
-            AppCode::Conflict => StatusCode::CONFLICT,
-            // 显式列出已知的 5xx
-            AppCode::Internal | AppCode::Database => StatusCode::INTERNAL_SERVER_ERROR,
-            // 任何尚未显式处理的新变体都进这里
-            _ => StatusCode::INTERNAL_SERVER_ERROR,
-        }
+pub fn parse_accept_language(header: &str) -> Vec<LanguageIdentifier> {
+    // 1. 带权重解析 → Vec<(lang, q)>
+    let ranked = parse_with_quality(header); // e.g. "en-US,en;q=0.9,zh-CN;q=0.8"
+    // 2. 转 LanguageIdentifier （失败就跳过）
+    ranked
+        .into_iter()
+        .filter_map(|(lang_str, _q)| lang_str.parse().ok())
+        .collect()
+}
+
+impl From<&AppError> for StatusCode {
+    fn from(err: &AppError) -> Self {
+        StatusCode::from_u16(err.http_status())
+            .unwrap_or(StatusCode::INTERNAL_SERVER_ERROR)
     }
 }
 
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         // 从上下文中取语言（task_local）
+        // 然后从用户语言以及支持的语言中协商得到最佳语言
         let ctx = get_request_context();
-        let language = ctx.lang.clone();
-        let language = crate::error::message::Language::from_header(&language);
+        let user_langs = parse_accept_language(ctx.lang.as_str());
+        let supported = supported_locales().unwrap_or_default();
+        let best = user_langs
+            .iter()
+            .find(|l| supported.contains(l)) // 完整匹配
+            .or_else(|| {
+                // 主区域匹配（zh-CN → zh）
+                user_langs
+                    .iter()
+                    .find_map(|l| supported.iter().find(|s| s.language == l.language))
+            })
+            .cloned()
+            .unwrap_or_else(|| langid!("zh-CN"));
 
-        let app_code = self.app_code();
-        let http_status: StatusCode = app_code.into();
+        // 获取状态码和返回消息
+        let status = StatusCode::from(&self);
+        let message = t_locale(self.as_key(), &best, self.to_args().into()).unwrap_or(self.to_string());
 
-        let message = crate::error::message::MessageRenderer::render(&self, language);
-        let error_response = APIResponse::<()>::error(app_code, message);
+        let error_response = APIResponse::<()>::error(self, message);
 
-        (http_status, Json(error_response)).into_response()
+        (status, Json(error_response)).into_response()
     }
 }

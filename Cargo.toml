@@ -69,6 +69,11 @@ serde_json = "1"
 thiserror = "2.0.17"
 anyhow = "1"
 
+# --- 国际化 ---
+fluent-bundle = "0.16.0"
+unic-langid = { version = "0.9", features = ["macros"] }
+accept-language = "3.1.0"
+
 # --- 其他常用工具 ---
 uuid = { version = "1", features = ["serde", "v4"] }
 chrono = { version = "0.4", features = ["serde"] }
